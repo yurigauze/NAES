@@ -1,14 +1,31 @@
 {% load static %}
 
+
+<!-- {% extends "pagina/modelo.html"} -->
+
 <!DOCTYPE html>
 <html lang="pt-br">
     <head>
+        {% block titulo %}
         <title>Teste</title>
+        {% endblock %}
+
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, intial-scale">
-        <link href = "{% static 'css/estilo.css' %}" rel="stylesheet">
+         <link href = "{% static 'css/estilo.css' %}" rel="stylesheet">
     </head>
     <body>
-        <h2> funcionando ...</h2>
+
+        {% block menu_superior %}
+        <div>
+            Barra de Menu
+        </div>
+        {% endblock %}
+
+        <div>
+            Menu Lateral
+        </div>
+        
+        <h2> Funcionando ...</h2>
     </body>
 </html>

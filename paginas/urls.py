@@ -1,7 +1,7 @@
 from django.urls import path
-from .views import Index
+from .views import IndexView, SobreView
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("", include("paginas.urls")),
+    path("", IndexView.as_view(), name="index"),
+    path("sobre/", SobreView.as_view(), name="sobre"),
 ]
