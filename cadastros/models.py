@@ -7,6 +7,9 @@ class Cidade(models.Model):
     
     def __str__(self):
         return f"{self.name}/{self.estado}"
+    
+    class Meta:
+        ordering = ["name", "estado"]
 
     
     
@@ -26,3 +29,7 @@ class Pessoa(models.Model):
     
     def __str__(self):
         return f"{self.nome_completo} ({self.cpf})"
+    
+    
+class OrdemDeCompra(models.Model):
+    data = models.DateTimeField(auto_now_add=True)
