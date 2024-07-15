@@ -15,15 +15,16 @@ class Cidade(models.Model):
     
 class Pessoa(models.Model):
     nome_completo = models.CharField(max_length=150)
-    data_nascimento = models.DateField(verbose_name="Data de Nascimento")
+    nascimento = models.DateField(verbose_name="data de nascimento")
     cpf = models.CharField(max_length=14, verbose_name="CPF", unique=True)
-    email = models.EmailField(max_length=120, blank=True, null=True, verbose_name="E-mail")
-    rede_social = models.URLField(max_length = 255, blank=True, null=True, default="Não informado", help_text="Informe o link do Instagram, Facebook ou outra rede social")
-    salario = models.DecimalField(verbose_name="Salario", decimal_places=2, max_digits=9)
+    email = models.EmailField(max_length=120, blank=True, null=True)
+    rede_social = models.URLField(max_length=255, blank=True,
+        null=True, help_text="Informe o link do Instagram, Facebook, LinkedIn ou outra rede social.")
+    salario = models.DecimalField(verbose_name="salário",
+        decimal_places=2, max_digits=9)
     
     cadastrado_em = models.DateTimeField(auto_now_add=True)
     atualizado_em = models.DateTimeField(auto_now=True)
-    
     
     cidade = models.ForeignKey(Cidade, on_delete=models.PROTECT)
     

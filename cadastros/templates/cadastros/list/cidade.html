@@ -1,0 +1,42 @@
+{% extends "paginas/modelo.html" %}
+
+{% block conteudo %}
+
+<h3> 
+    Lista de <b>Cidades</b>
+</h3>
+
+<hr>
+
+<table class="table table-striped">
+    <thead>
+        <th>Cidade</th>
+        <th>Estado</th>
+        <th>Opções</th>
+    </thead>
+   <tbody>
+
+    {% for object in object_list %}
+    <tr>
+
+        <td>{{object.nome}}</td>
+        <td>{{object.estado}}</td>
+        <td>
+        <a href="{% url 'editar-cidade' object.pk %}" class="btn btn-sm btn-out">
+            Editar
+        </a>
+
+        <a href="{% url 'editar-cidade' object.pk %}" class="btn btn-sm btn-out">
+            Excluir
+        </a>
+    {% empty %}
+        <tr>
+            <td colspan="3">Nenhum registro encontrado.</td>
+        </tr>
+
+    {% endfor %}
+
+   </tbody>
+</table>
+
+{% endblock %}

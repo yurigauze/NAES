@@ -37,12 +37,12 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "paginas.apps.PaginasConfig",  # ativar o modulo paginas
-    "cadastros.apps.CadastrosConfig",
     
-    # Ativar apps de complementos
     "crispy_forms",
     "crispy_bootstrap5",
+
+    "paginas.apps.PaginasConfig",  # ativar app
+    "cadastros.apps.CadastrosConfig",  # Ativar app
     
     
 ]
@@ -136,7 +136,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Configuração dos arquivos estaticos
 
 
+# Configurações do Crispy Forms
 
-# configuração crispy
 CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap5'
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
