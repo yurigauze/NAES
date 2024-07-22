@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Sum
 
 # Create your models here.
 class Cidade(models.Model):
@@ -10,18 +11,14 @@ class Cidade(models.Model):
     
     class Meta:
         ordering = ["name", "estado"]
-
     
     
 class Pessoa(models.Model):
     nome_completo = models.CharField(max_length=150)
     nascimento = models.DateField(verbose_name="data de nascimento")
-    cpf = models.CharField(max_length=14, verbose_name="CPF", unique=True)
     email = models.EmailField(max_length=120, blank=True, null=True)
-    rede_social = models.URLField(max_length=255, blank=True,
-        null=True, help_text="Informe o link do Instagram, Facebook, LinkedIn ou outra rede social.")
-    salario = models.DecimalField(verbose_name="salário",
-        decimal_places=2, max_digits=9)
+    cargo = models.URLField(max_length=255, blank=True,
+        null=True,)
     
     cadastrado_em = models.DateTimeField(auto_now_add=True)
     atualizado_em = models.DateTimeField(auto_now=True)
@@ -29,8 +26,37 @@ class Pessoa(models.Model):
     cidade = models.ForeignKey(Cidade, on_delete=models.PROTECT)
     
     def __str__(self):
-        return f"{self.nome_completo} ({self.cpf})"
+        return f"{self.nome_completo}"
     
+    
+class Prefeitura(models.Model):
+    nome = models.CharField(max_length=150)
+    cidade = models.ForeignKey(Cidade, on_delete=models.PROTECT, default=1)
+    
+    cadastrado_em = models.DateTimeField(auto_now_add=True)
+    atualizado_em = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return f"{self.nome}"
+    
+class Produto(models.Model):
+    nome = models.CharField(max_length=150)
+    undMedida = models.CharField(max_length=3)
+
     
 class OrdemDeCompra(models.Model):
     data = models.DateTimeField(auto_now_add=True)
+    prefeitura = models.ForeignKey(
+        Prefeitura, on_delete=models.PROTECT, default=1)
+    cidade = models.ForeignKey(
+        Cidade, on_delete=models.PROTECT, null=False, default=1)
+    produtos = models.ManyToManyField(Produto, through='ItemOrdemDeCompra')
+    entregue = models.BooleanField(default=False)
+    
+
+class ItemOrdemDeCompra(models.Model):
+    ordem_de_compra = models.ForeignKey(
+        OrdemDeCompra, on_delete=models.CASCADE)
+    produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
+    valor = models.DecimalField(max_digits=10, decimal_places=2)
+    
