@@ -1,27 +1,23 @@
 {% extends "paginas/modelo.html" %}
 
 {% load static %}
-{% load crispy_forms_tags %}
 
 {% block conteudo %}
-
 <h3 class="text-danger">
-    {{titulo\default:"Exclusão de registror"}}
+    {{ titulo|default:"Exclusão de registros" }}
 </h3>
 
+<hr>
 
 <div class="row">
-    <div class="col-lg-6">
+    <div class="col-lg">
         
         <form method="POST">
             {% csrf_token %}
         
-            <p>
+            <p class="fs-4">
                 Deseja excluir o registro
-                <span class="fw-bold">
-                    {{ object }}
-                </span>
-                    
+                <span class="fw-bold">{{ object }}</span>?
             </p>
         
             <button type="submit" class="btn btn-danger">
@@ -32,6 +28,4 @@
         
     </div>
 </div>
-
-
 {% endblock %}

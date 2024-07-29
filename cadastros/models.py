@@ -1,5 +1,6 @@
 from django.db import models
 from django.db.models import Sum
+import datetime
 
 # Create your models here.
 class Cidade(models.Model):
@@ -15,23 +16,20 @@ class Cidade(models.Model):
     
 class Pessoa(models.Model):
     nome_completo = models.CharField(max_length=150)
-    nascimento = models.DateField(verbose_name="data de nascimento")
+    nascimento = models.DateField(default=datetime.date(
+        2000, 1, 1), verbose_name="data de nascimento")
     email = models.EmailField(max_length=120, blank=True, null=True)
-    cargo = models.URLField(max_length=255, blank=True,
-        null=True,)
-    
+    cargo = models.CharField(max_length=255, blank=True, null=True)
     cadastrado_em = models.DateTimeField(auto_now_add=True)
     atualizado_em = models.DateTimeField(auto_now=True)
-    
     cidade = models.ForeignKey(Cidade, on_delete=models.PROTECT)
-    
+
     def __str__(self):
         return f"{self.nome_completo}"
     
-    
 class Prefeitura(models.Model):
     nome = models.CharField(max_length=150)
-    cidade = models.ForeignKey(Cidade, on_delete=models.PROTECT, default=1)
+    cidade = models.ForeignKey(Cidade, on_delete=models.PROTECT)
     
     cadastrado_em = models.DateTimeField(auto_now_add=True)
     atualizado_em = models.DateTimeField(auto_now=True)
@@ -47,10 +45,9 @@ class Produto(models.Model):
 class OrdemDeCompra(models.Model):
     data = models.DateTimeField(auto_now_add=True)
     prefeitura = models.ForeignKey(
-        Prefeitura, on_delete=models.PROTECT, default=1)
+        Prefeitura, on_delete=models.PROTECT)
     cidade = models.ForeignKey(
-        Cidade, on_delete=models.PROTECT, null=False, default=1)
-    produtos = models.ManyToManyField(Produto, through='ItemOrdemDeCompra')
+        Cidade, on_delete=models.PROTECT, null=False)
     entregue = models.BooleanField(default=False)
     
 

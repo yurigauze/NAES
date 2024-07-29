@@ -3,15 +3,15 @@
 {% block conteudo %}
 
 <h3> 
-    Lista de <b>Cidades</b>
+    Lista de <b>Produtos</b>
 </h3>
 
 <hr>
 
 <table class="table table-striped">
     <thead>
-        <th>Cidade</th>
-        <th>Estado</th>
+        <th>Nome</th>
+        <th>Und Medida</th>
         <th>Opções</th>
     </thead>
    <tbody>
@@ -20,13 +20,13 @@
     <tr>
 
         <td>{{object.name}}</td>
-        <td>{{object.estado}}</td>
+        <td>{{object.undMedida}}</td>
         <td>
-        <a href="{% url 'editar-cidade' object.pk %}" class="btn btn-sm btn-out">
+        <a href="{% url 'editar-produtos' object.pk %}" class="btn btn-sm btn-out">
             Editar
         </a>
 
-        <a href="{% url 'excluir-cidade' object.pk %}" class="btn btn-sm btn-out">
+        <a href="{% url 'excluir-produtos' object.pk %}" class="btn btn-sm btn-out">
             Excluir
         </a>
     {% empty %}

@@ -1,15 +1,28 @@
+{% extends "paginas/modelo.html" %}
+
 {% load static %}
 
-<!DOCTYPE html>
+{% load crispy_forms_tags %}
+
+{% block conteudo %}
+
 <html lang="pt-br">
     <head>
         <title>Teste</title>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, intial-scale">
-        <link href = "{% static 'css/estilo.css' %}" rel="stylesheet">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="{% static 'css/estilo.css' %}" rel="stylesheet">
     </head>
     <body>
         <h3>Sobre o sistema</h3>
-        <h2> funcionando ...</h2>
+        
+        <!-- Exibindo as imagens -->
+        <img src="{% static 'img/DiagramaCasoUso.png' %}" alt="Imagem 1" width="600">
+        <p>
+        <img src="{% static 'img/DiagramaClasse.png' %}" alt="Imagem 2" width="600">
     </body>
 </html>
+
+
+
+{% endblock %}
