@@ -2,6 +2,8 @@ from django.db import models
 from django.db.models import Sum
 import datetime
 
+
+
 # Create your models here.
 class Cidade(models.Model):
     name = models.CharField(max_length=100)

@@ -19,14 +19,14 @@
     {% for object in object_list %}
     <tr>
 
-        <td>{{object.name}}</td>
+        <td>{{object.nome}}</td>
         <td>{{object.undMedida}}</td>
         <td>
-        <a href="{% url 'editar-produtos' object.pk %}" class="btn btn-sm btn-out">
+        <a href="{% url 'editar-produto' object.pk %}" class="btn btn-sm btn-out">
             Editar
         </a>
 
-        <a href="{% url 'excluir-produtos' object.pk %}" class="btn btn-sm btn-out">
+        <a href="{% url 'excluir-produto' object.pk %}" class="btn btn-sm btn-out">
             Excluir
         </a>
     {% empty %}

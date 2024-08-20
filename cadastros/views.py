@@ -4,10 +4,13 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 
+from django.contrib.auth.mixins import LoginRequiredMixin
+from braces.views import GroupRequiredMixin
+
 from cadastros.models import Cidade, Pessoa, Prefeitura, Produto, OrdemDeCompra, ItemOrdemDeCompra
 
 
-class CidadeCreate(CreateView):
+class CidadeCreate(LoginRequiredMixin, CreateView):
     model = Cidade
     fields = ['name', 'estado']
     template_name = 'cadastros/form.html'
@@ -19,7 +22,7 @@ class CidadeCreate(CreateView):
         return dados
 
 
-class CidadeUpdate(UpdateView):
+class CidadeUpdate(LoginRequiredMixin, UpdateView):
     model = Cidade
     fields = ['name']
     template_name = 'cadastros/form.html'
@@ -31,18 +34,19 @@ class CidadeUpdate(UpdateView):
         return dados
 
 
-class CidadeDelete(DeleteView):
+class CidadeDelete(GroupRequiredMixin, DeleteView):
     model = Cidade
     template_name = 'cadastros/form-excluir.html'
     success_url = reverse_lazy('listar-cidades')
+    group_required = ["Administrador"]
 
 
-class CidadeList(ListView):
+class CidadeList(LoginRequiredMixin, ListView):
     model = Cidade
     template_name = 'cadastros/list/cidade.html'
 
 
-class PessoaCreate(CreateView):
+class PessoaCreate(LoginRequiredMixin, CreateView):
     model = Pessoa
     fields = ['nome_completo', 'nascimento', 'email', 'cargo', 'cidade']
     template_name = 'cadastros/form.html'
@@ -54,7 +58,7 @@ class PessoaCreate(CreateView):
         return dados
 
 
-class PessoaUpdate(UpdateView):
+class PessoaUpdate(LoginRequiredMixin, UpdateView):
     model = Pessoa
     fields = ['nome_completo', 'nascimento', 'email', 'cargo', 'cidade']
     template_name = 'cadastros/form.html'
@@ -66,18 +70,19 @@ class PessoaUpdate(UpdateView):
         return dados
 
 
-class PessoaDelete(DeleteView):
+class PessoaDelete(GroupRequiredMixin, DeleteView):
     model = Pessoa
     template_name = 'cadastros/form-excluir.html'
     success_url = reverse_lazy('listar-pessoas')
+    group_required = ["Administrador"]
 
 
-class PessoaList(ListView):
+class PessoaList(LoginRequiredMixin, ListView):
     model = Pessoa
     template_name = 'cadastros/list/pessoa.html'
 
 
-class PrefeituraCreate(CreateView):
+class PrefeituraCreate(LoginRequiredMixin, CreateView):
     model = Prefeitura
     fields = ['nome', 'cidade']
     template_name = 'cadastros/form.html'
@@ -89,7 +94,7 @@ class PrefeituraCreate(CreateView):
         return dados
 
 
-class PrefeituraUpdate(UpdateView):
+class PrefeituraUpdate(LoginRequiredMixin, UpdateView):
     model = Prefeitura
     fields = ['nome', 'cidade']
     template_name = 'cadastros/form.html'
@@ -101,18 +106,19 @@ class PrefeituraUpdate(UpdateView):
         return dados
 
 
-class PrefeituraDelete(DeleteView):
+class PrefeituraDelete(GroupRequiredMixin, DeleteView):
     model = Prefeitura
     template_name = 'cadastros/form-excluir.html'
     success_url = reverse_lazy('listar-prefeituras')
+    group_required =["Administrador"]
 
 
-class PrefeituraList(ListView):
+class PrefeituraList(LoginRequiredMixin, ListView):
     model = Prefeitura
     template_name = 'cadastros/list/prefeitura.html'
 
 
-class ProdutoCreate(CreateView):
+class ProdutoCreate(LoginRequiredMixin, CreateView):
     model = Produto
     fields = ['nome', 'undMedida']
     template_name = 'cadastros/form.html'
@@ -124,7 +130,7 @@ class ProdutoCreate(CreateView):
         return dados
 
 
-class ProdutoUpdate(UpdateView):
+class ProdutoUpdate(LoginRequiredMixin, UpdateView):
     model = Produto
     fields = ['nome', 'undMedida']
     template_name = 'cadastros/form.html'
@@ -136,24 +142,25 @@ class ProdutoUpdate(UpdateView):
         return dados
 
 
-class ProdutoDelete(DeleteView):
+class ProdutoDelete(GroupRequiredMixin, DeleteView):
     model = Produto
     template_name = 'cadastros/form-excluir.html'
     success_url = reverse_lazy('listar-produtos')
+    group_required = ["Administrador"]
 
 
-class ProdutoList(ListView):
+class ProdutoList(LoginRequiredMixin, ListView):
     model = Produto
     template_name = 'cadastros/list/produto.html'
 
 
-class OrdemDeCompraDetail(DetailView):
+class OrdemDeCompraDetail(LoginRequiredMixin, DetailView):
     model = OrdemDeCompra
     template_name = 'cadastros/ordem_de_compra_detail.html'
     context_object_name = 'ordem_de_compra'
 
 
-class OrdemDeCompraCreate(CreateView):
+class OrdemDeCompraCreate(LoginRequiredMixin, CreateView):
     model = OrdemDeCompra
     fields = ['prefeitura', 'cidade', 'produtos', 'entregue']
     template_name = 'cadastros/form.html'
@@ -165,7 +172,7 @@ class OrdemDeCompraCreate(CreateView):
         return dados
 
 
-class OrdemDeCompraUpdate(UpdateView):
+class OrdemDeCompraUpdate(LoginRequiredMixin, UpdateView):
     model = OrdemDeCompra
     fields = ['prefeitura', 'cidade', 'produtos', 'entregue']
     template_name = 'cadastros/form.html'
@@ -177,19 +184,20 @@ class OrdemDeCompraUpdate(UpdateView):
         return dados
 
 
-class OrdemDeCompraDelete(DeleteView):
+class OrdemDeCompraDelete(GroupRequiredMixin, DeleteView):
     model = OrdemDeCompra
     template_name = 'cadastros/form-excluir.html'
     success_url = reverse_lazy('listar-ordens-de-compra')
+    group_required = ["Administrador"]
 
 
-class OrdemDeCompraList(ListView):
+class OrdemDeCompraList(LoginRequiredMixin, ListView):
     model = OrdemDeCompra
     template_name = 'cadastros/list/ordem_de_compra.html'
     context_object_name = 'ordens_de_compra'
 
 
-class ItemOrdemDeCompraCreate(CreateView):
+class ItemOrdemDeCompraCreate(LoginRequiredMixin, CreateView):
     model = ItemOrdemDeCompra
     fields = ['produto', 'valor']
     template_name = 'cadastros/item_ordem_de_compra_form.html'
@@ -204,7 +212,7 @@ class ItemOrdemDeCompraCreate(CreateView):
         return reverse_lazy('ordem-detail', kwargs={'pk': self.kwargs['pk']})
 
 
-class ItemOrdemDeCompraUpdate(UpdateView):
+class ItemOrdemDeCompraUpdate(LoginRequiredMixin, UpdateView):
     model = ItemOrdemDeCompra
     fields = ['produto', 'valor']
     template_name = 'cadastros/item_ordem_de_compra_form.html'

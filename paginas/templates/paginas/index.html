@@ -1,31 +1,25 @@
+{% extends "paginas/modelo.html" %}
+
 {% load static %}
 
+{% block conteudo %}
 
-<!-- {% extends "pagina/modelo.html"} -->
+<h3>Bem Vindos ao sistema</h3>
 
-<!DOCTYPE html>
-<html lang="pt-br">
-    <head>
-        {% block titulo %}
-        <title>Teste</title>
-        {% endblock %}
+{% if not request.user.is_authenticated %}
+    <p>
+        Para acessar o sistema, faça o login.
+    </p>
+    <p>
+        <a href="{% url 'login' %}" class="btn btn-success">Login</a>
+    </p>
 
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, intial-scale">
-         <link href = "{% static 'css/estilo.css' %}" rel="stylesheet">
-    </head>
-    <body>
+{% else %}
 
-        {% block menu_superior %}
-        <div>
-            Barra de Menu
-        </div>
-        {% endblock %}
+    <p>
+        Olá, {{ request.user }}!
+    </p>
 
-        <div>
-            Menu Lateral
-        </div>
-        
-        <h2> Funcionando ...</h2>
-    </body>
-</html>
+{% endif %}
+
+{% endblock %}
