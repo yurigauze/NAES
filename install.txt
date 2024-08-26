@@ -1,2 +1,5 @@
 pip install crispy-bootstrap5
 pip install django-crispy-forms
+pip install django-braces
+
+python manage.py runserver 8080
