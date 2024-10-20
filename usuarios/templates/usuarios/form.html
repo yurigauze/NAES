@@ -1,11 +1,8 @@
 {% extends "paginas/modelo.html" %}
-
 {% load static %}
 {% load crispy_forms_tags %}
 
 {% block conteudo %}
-
-{% if not request.user.is_authenticated %}
 <h3>
     {{ titulo|default:"Autenticação" }}
 </h3>
@@ -28,19 +25,4 @@
         
     </div>
 </div>
-
-{% else %}
-
-<h3 class="text-warning text-center">Atenção!!!</h3>
-
-<div class="alert alert-warning fs-5 mt-5 text-center">
-    A ação desejada não pode ser realizada.
-</div>
-
-<p class="text-center">
-    <a href="#" onclick="history.back()" class="btn btn-lg btn-primary">Voltar</a>
-</p>
-
-{% endif %}
-
 {% endblock %}

@@ -1,0 +1,9 @@
+# Ignorar arquivos compilados Python
+__pycache__/
+*.pyc
+
+# Ignorar arquivos de migração (se necessário)
+# cadastros/migrations/*.pyc
+# usuarios/migrations/*.pyc
+# paginas/migrations/*.pyc
+

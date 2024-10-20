@@ -41,7 +41,5 @@ urlpatterns = [
          OrdemDeCompraDelete.as_view(), name='excluir-ordem-de-compra'),
     path('listar/ordens-de-compra/', OrdemDeCompraList.as_view(),
          name='listar-ordens-de-compra'),
-    
-    
 
 ]

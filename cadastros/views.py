@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from usuarios.forms import CustomUserCreationForm
+from django.views.generic.edit import CreateView, UpdateView, DeleteView, View
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 
@@ -10,213 +11,231 @@ from braces.views import GroupRequiredMixin
 from cadastros.models import Cidade, Pessoa, Prefeitura, Produto, OrdemDeCompra, ItemOrdemDeCompra
 
 
-class CidadeCreate(LoginRequiredMixin, CreateView):
+# Cidade
+class CidadeCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
     model = Cidade
     fields = ['name', 'estado']
     template_name = 'cadastros/form.html'
     success_url = reverse_lazy('listar-cidades')
+    group_required = ["Administrador", "Editor"]
 
-    def get_context_data(self, **kwargs):
-        dados = super().get_context_data(**kwargs)
-        dados['titulo'] = 'Cadastrar cidade'
-        return dados
+    def form_valid(self, form):
+        form.instance.user = self.request.user  # Define o usuário atual como o proprietário
+        return super().form_valid(form)
 
-
-class CidadeUpdate(LoginRequiredMixin, UpdateView):
+class CidadeUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
     model = Cidade
-    fields = ['name']
+    fields = ['name', 'estado']
     template_name = 'cadastros/form.html'
     success_url = reverse_lazy('listar-cidades')
+    group_required = ["Administrador", "Editor"]
 
-    def get_context_data(self, **kwargs):
-        dados = super().get_context_data(**kwargs)
-        dados['titulo'] = 'Editar registro de Cidade'
-        return dados
+    def get_queryset(self):
+        return super().get_queryset().filter(user=self.request.user)
 
-
-class CidadeDelete(GroupRequiredMixin, DeleteView):
+class CidadeDelete(GroupRequiredMixin, LoginRequiredMixin, DeleteView):
     model = Cidade
     template_name = 'cadastros/form-excluir.html'
     success_url = reverse_lazy('listar-cidades')
     group_required = ["Administrador"]
 
+    def get_queryset(self):
+        return super().get_queryset().filter(user=self.request.user)
 
-class CidadeList(LoginRequiredMixin, ListView):
+class CidadeList(GroupRequiredMixin, LoginRequiredMixin, ListView):
     model = Cidade
     template_name = 'cadastros/list/cidade.html'
+    group_required = ["Administrador", "Editor"]
+
+    def get_queryset(self):
+        return super().get_queryset().filter(user=self.request.user)
 
 
-class PessoaCreate(LoginRequiredMixin, CreateView):
+# Pessoa
+class PessoaCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
     model = Pessoa
     fields = ['nome_completo', 'nascimento', 'email', 'cargo', 'cidade']
     template_name = 'cadastros/form.html'
     success_url = reverse_lazy('listar-pessoas')
+    group_required = ["Administrador", "Editor"]
 
-    def get_context_data(self, **kwargs):
-        dados = super().get_context_data(**kwargs)
-        dados['titulo'] = 'Cadastrar nova Pessoa'
-        return dados
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
 
-
-class PessoaUpdate(LoginRequiredMixin, UpdateView):
+class PessoaUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
     model = Pessoa
     fields = ['nome_completo', 'nascimento', 'email', 'cargo', 'cidade']
     template_name = 'cadastros/form.html'
-    success_url = reverse_lazy('listar-pessoa')
+    success_url = reverse_lazy('listar-pessoas')
+    group_required = ["Administrador", "Editor"]
 
-    def get_context_data(self, **kwargs):
-        dados = super().get_context_data(**kwargs)
-        dados['titulo'] = f"Editar registro de {self.object.nome_completo}"
-        return dados
+    def get_queryset(self):
+        return super().get_queryset().filter(user=self.request.user)
 
-
-class PessoaDelete(GroupRequiredMixin, DeleteView):
+class PessoaDelete(GroupRequiredMixin, LoginRequiredMixin, DeleteView):
     model = Pessoa
     template_name = 'cadastros/form-excluir.html'
     success_url = reverse_lazy('listar-pessoas')
     group_required = ["Administrador"]
 
+    def get_queryset(self):
+        return super().get_queryset().filter(user=self.request.user)
 
-class PessoaList(LoginRequiredMixin, ListView):
+class PessoaList(GroupRequiredMixin, LoginRequiredMixin, ListView):
     model = Pessoa
     template_name = 'cadastros/list/pessoa.html'
+    group_required = ["Administrador", "Editor"]
+
+    def get_queryset(self):
+        return super().get_queryset().filter(user=self.request.user)
 
 
-class PrefeituraCreate(LoginRequiredMixin, CreateView):
+# Prefeitura
+class PrefeituraCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
     model = Prefeitura
     fields = ['nome', 'cidade']
     template_name = 'cadastros/form.html'
     success_url = reverse_lazy('listar-prefeituras')
+    group_required = ["Administrador", "Editor"]
 
-    def get_context_data(self, **kwargs):
-        dados = super().get_context_data(**kwargs)
-        dados['titulo'] = 'Cadastrar nova Prefeitura'
-        return dados
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
 
-
-class PrefeituraUpdate(LoginRequiredMixin, UpdateView):
+class PrefeituraUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
     model = Prefeitura
     fields = ['nome', 'cidade']
     template_name = 'cadastros/form.html'
     success_url = reverse_lazy('listar-prefeituras')
+    group_required = ["Administrador", "Editor"]
 
-    def get_context_data(self, **kwargs):
-        dados = super().get_context_data(**kwargs)
-        dados['titulo'] = f"Editar registro de {self.object.nome}"
-        return dados
+    def get_queryset(self):
+        return super().get_queryset().filter(user=self.request.user)
 
-
-class PrefeituraDelete(GroupRequiredMixin, DeleteView):
+class PrefeituraDelete(GroupRequiredMixin, LoginRequiredMixin, DeleteView):
     model = Prefeitura
     template_name = 'cadastros/form-excluir.html'
     success_url = reverse_lazy('listar-prefeituras')
-    group_required =["Administrador"]
+    group_required = ["Administrador"]
 
+    def get_queryset(self):
+        return super().get_queryset().filter(user=self.request.user)
 
-class PrefeituraList(LoginRequiredMixin, ListView):
+class PrefeituraList(GroupRequiredMixin, LoginRequiredMixin, ListView):
     model = Prefeitura
     template_name = 'cadastros/list/prefeitura.html'
+    group_required = ["Administrador", "Editor"]
+
+    def get_queryset(self):
+        return super().get_queryset().filter(user=self.request.user)
 
 
-class ProdutoCreate(LoginRequiredMixin, CreateView):
+# Produto
+class ProdutoCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
     model = Produto
     fields = ['nome', 'undMedida']
     template_name = 'cadastros/form.html'
     success_url = reverse_lazy('listar-produtos')
+    group_required = ["Administrador", "Editor"]
 
-    def get_context_data(self, **kwargs):
-        dados = super().get_context_data(**kwargs)
-        dados['titulo'] = 'Cadastrar novo Produto'
-        return dados
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
 
-
-class ProdutoUpdate(LoginRequiredMixin, UpdateView):
+class ProdutoUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
     model = Produto
     fields = ['nome', 'undMedida']
     template_name = 'cadastros/form.html'
     success_url = reverse_lazy('listar-produtos')
+    group_required = ["Administrador", "Editor"]
 
-    def get_context_data(self, **kwargs):
-        dados = super().get_context_data(**kwargs)
-        dados['titulo'] = f"Editar registro de {self.object.nome}"
-        return dados
+    def get_queryset(self):
+        return super().get_queryset().filter(user=self.request.user)
 
-
-class ProdutoDelete(GroupRequiredMixin, DeleteView):
+class ProdutoDelete(GroupRequiredMixin, LoginRequiredMixin, DeleteView):
     model = Produto
     template_name = 'cadastros/form-excluir.html'
     success_url = reverse_lazy('listar-produtos')
     group_required = ["Administrador"]
 
+    def get_queryset(self):
+        return super().get_queryset().filter(user=self.request.user)
 
-class ProdutoList(LoginRequiredMixin, ListView):
+class ProdutoList(GroupRequiredMixin, LoginRequiredMixin, ListView):
     model = Produto
     template_name = 'cadastros/list/produto.html'
+    group_required = ["Administrador", "Editor"]
+
+    def get_queryset(self):
+        return super().get_queryset().filter(user=self.request.user)
 
 
-class OrdemDeCompraDetail(LoginRequiredMixin, DetailView):
-    model = OrdemDeCompra
-    template_name = 'cadastros/ordem_de_compra_detail.html'
-    context_object_name = 'ordem_de_compra'
-
-
-class OrdemDeCompraCreate(LoginRequiredMixin, CreateView):
-    model = OrdemDeCompra
-    fields = ['prefeitura', 'cidade', 'produtos', 'entregue']
-    template_name = 'cadastros/form.html'
-    success_url = reverse_lazy('listar-ordens-de-compra')
-
-    def get_context_data(self, **kwargs):
-        dados = super().get_context_data(**kwargs)
-        dados['titulo'] = 'Cadastrar nova Ordem de Compra'
-        return dados
-
-
-class OrdemDeCompraUpdate(LoginRequiredMixin, UpdateView):
+# Ordem de Compra
+class OrdemDeCompraCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
     model = OrdemDeCompra
     fields = ['prefeitura', 'cidade', 'produtos', 'entregue']
     template_name = 'cadastros/form.html'
     success_url = reverse_lazy('listar-ordens-de-compra')
+    group_required = ["Administrador", "Editor"]
 
-    def get_context_data(self, **kwargs):
-        dados = super().get_context_data(**kwargs)
-        dados['titulo'] = f"Editar registro de Ordem de Compra #{self.object.pk}"
-        return dados
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
 
+class OrdemDeCompraUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
+    model = OrdemDeCompra
+    fields = ['prefeitura', 'cidade', 'produtos', 'entregue']
+    template_name = 'cadastros/form.html'
+    success_url = reverse_lazy('listar-ordens-de-compra')
+    group_required = ["Administrador", "Editor"]
 
-class OrdemDeCompraDelete(GroupRequiredMixin, DeleteView):
+    def get_queryset(self):
+        return super().get_queryset().filter(user=self.request.user)
+
+class OrdemDeCompraDelete(GroupRequiredMixin, LoginRequiredMixin, DeleteView):
     model = OrdemDeCompra
     template_name = 'cadastros/form-excluir.html'
     success_url = reverse_lazy('listar-ordens-de-compra')
     group_required = ["Administrador"]
 
+    def get_queryset(self):
+        return super().get_queryset().filter(user=self.request.user)
 
-class OrdemDeCompraList(LoginRequiredMixin, ListView):
+class OrdemDeCompraList(GroupRequiredMixin, LoginRequiredMixin, ListView):
     model = OrdemDeCompra
     template_name = 'cadastros/list/ordem_de_compra.html'
-    context_object_name = 'ordens_de_compra'
+    group_required = ["Administrador", "Editor"]
+
+    def get_queryset(self):
+        return super().get_queryset().filter(user=self.request.user)
 
 
-class ItemOrdemDeCompraCreate(LoginRequiredMixin, CreateView):
+# Item da Ordem de Compra
+class ItemOrdemDeCompraCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
     model = ItemOrdemDeCompra
     fields = ['produto', 'valor']
     template_name = 'cadastros/item_ordem_de_compra_form.html'
+    group_required = ["Administrador", "Editor"]
 
     def form_valid(self, form):
-        ordem_de_compra = get_object_or_404(
-            OrdemDeCompra, pk=self.kwargs['pk'])
+        ordem_de_compra = get_object_or_404(OrdemDeCompra, pk=self.kwargs['pk'], user=self.request.user)
         form.instance.ordem_de_compra = ordem_de_compra
         return super().form_valid(form)
 
     def get_success_url(self):
         return reverse_lazy('ordem-detail', kwargs={'pk': self.kwargs['pk']})
 
-
-class ItemOrdemDeCompraUpdate(LoginRequiredMixin, UpdateView):
+class ItemOrdemDeCompraUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
     model = ItemOrdemDeCompra
     fields = ['produto', 'valor']
     template_name = 'cadastros/item_ordem_de_compra_form.html'
+    group_required = ["Administrador", "Editor"]
+
+    def get_queryset(self):
+        return super().get_queryset().filter(ordem_de_compra__user=self.request.user)
 
     def get_success_url(self):
         return reverse_lazy('ordem-detail', kwargs={'pk': self.object.ordem_de_compra.pk})
+
 

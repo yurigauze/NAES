@@ -20,6 +20,43 @@
         Olá, {{ request.user }}!
     </p>
 
+    <h1>Informações Gerais</h1>
+
+    <hr>  <!-- Divisor entre as seções -->
+
+    <h3>Produtos</h3>
+
+    <p>Total de Produtos: {{ quantidade_total_produtos }}</p>
+
+    <h5>Últimos Produtos</h5>
+    <ul>
+        {% for produto in ultimos_produtos %}
+            <li>{{ produto.nome }}</li>
+        {% empty %}
+            <li>Nenhum produto cadastrado.</li>
+        {% endfor %}
+    </ul>
+
+    <hr>  <!-- Divisor entre as seções -->
+
+    <h3>Prefituras</h3>
+
+    <p>Total de Prefeituras: {{ quantidade_total_prefeituras }}</p>
+
+    <h5>Última Prefeitura Cadastrada</h5>
+    <p>
+        {% if ultima_prefeitura %}
+            {{ ultima_prefeitura.nome }}
+        {% else %}
+            Nenhuma prefeitura cadastrada.
+        {% endif %}
+    </p>
+
+    <hr>  <!-- Divisor entre as seções -->
+
+    <h3>Ordens de Compras</h>
+    <h5>Total de Ordens de Compra: {{ quantidade_total_ordens_de_compra }}</h5>
+
 {% endif %}
 
 {% endblock %}
