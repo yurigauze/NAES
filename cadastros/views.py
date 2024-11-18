@@ -10,20 +10,25 @@ from braces.views import GroupRequiredMixin
 
 from cadastros.models import Cidade, Pessoa, Prefeitura, Produto, OrdemDeCompra, ItemOrdemDeCompra
 
+from django.contrib.messages.views import SuccessMessageMixin
+
+
+
 
 # Cidade
-class CidadeCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
+class CidadeCreate(GroupRequiredMixin, LoginRequiredMixin, SuccessMessageMixin,CreateView):
     model = Cidade
     fields = ['name', 'estado']
     template_name = 'cadastros/form.html'
     success_url = reverse_lazy('listar-cidades')
     group_required = ["Administrador", "Editor"]
+    sucess_message = "Cidade %(nome)s Adicionada com sucesso!"
 
     def form_valid(self, form):
         form.instance.user = self.request.user  # Define o usuário atual como o proprietário
         return super().form_valid(form)
 
-class CidadeUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
+class CidadeUpdate(GroupRequiredMixin, LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Cidade
     fields = ['name', 'estado']
     template_name = 'cadastros/form.html'
@@ -33,7 +38,7 @@ class CidadeUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
     def get_queryset(self):
         return super().get_queryset().filter(user=self.request.user)
 
-class CidadeDelete(GroupRequiredMixin, LoginRequiredMixin, DeleteView):
+class CidadeDelete(GroupRequiredMixin, LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     model = Cidade
     template_name = 'cadastros/form-excluir.html'
     success_url = reverse_lazy('listar-cidades')
@@ -42,7 +47,7 @@ class CidadeDelete(GroupRequiredMixin, LoginRequiredMixin, DeleteView):
     def get_queryset(self):
         return super().get_queryset().filter(user=self.request.user)
 
-class CidadeList(GroupRequiredMixin, LoginRequiredMixin, ListView):
+class CidadeList(GroupRequiredMixin, LoginRequiredMixin, SuccessMessageMixin, ListView):
     model = Cidade
     template_name = 'cadastros/list/cidade.html'
     group_required = ["Administrador", "Editor"]

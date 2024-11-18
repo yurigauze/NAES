@@ -24,4 +24,6 @@ urlpatterns = [
     path("", include("cadastros.urls")),
     path("", include("usuarios.urls")),
     path('usuarios/', include('usuarios.urls')),
+
+    path("__debug__/", include("debug_toolbar.urls")),
 ]

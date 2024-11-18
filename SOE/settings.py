@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "paginas.apps.PaginasConfig",  # ativar app
     "cadastros.apps.CadastrosConfig",  # Ativar app
     "usuarios.apps.UsuariosConfig",
+    "debug_toolbar",
 
     
     
@@ -57,6 +58,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
+
 ]
 
 ROOT_URLCONF = "SOE.urls"
@@ -147,3 +150,16 @@ LOGIN_REDIRECT_URL = 'index'
 LOGIN_URL= 'login'
 LOGOUT_REDIRECT_URL = 'login' 
 AUTH_USER_MODEL = 'usuarios.CustomUser'
+
+INTERNAL_IPS = [
+    # ...
+    "127.0.0.1",
+    # ...
+]
+
+# configuração de mensagem de notificação
+from django.contrib.messages import constants as messages
+
+MESSAGE_TAGS = {
+    messages.ERROR: "danger",
+}
