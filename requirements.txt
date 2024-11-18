@@ -1,0 +1,7 @@
+Django==4.2.5
+django-crispy-forms==2.3
+crispy-bootstrap5==2024.10
+django-debug-toolbar==4.3.0
+django-autocomplete-light==3.9.7
+
+## pip install -r requirements.txt

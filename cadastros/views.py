@@ -22,7 +22,7 @@ class CidadeCreate(GroupRequiredMixin, LoginRequiredMixin, SuccessMessageMixin,C
     template_name = 'cadastros/form.html'
     success_url = reverse_lazy('listar-cidades')
     group_required = ["Administrador", "Editor"]
-    sucess_message = "Cidade %(nome)s Adicionada com sucesso!"
+    success_message = "Cidade %(name)s Adicionada com sucesso!"
 
     def form_valid(self, form):
         form.instance.user = self.request.user  # Define o usuário atual como o proprietário
@@ -34,6 +34,7 @@ class CidadeUpdate(GroupRequiredMixin, LoginRequiredMixin, SuccessMessageMixin, 
     template_name = 'cadastros/form.html'
     success_url = reverse_lazy('listar-cidades')
     group_required = ["Administrador", "Editor"]
+    success_message = "Cidade %(name)s atualizada!"
 
     def get_queryset(self):
         return super().get_queryset().filter(user=self.request.user)
@@ -43,6 +44,7 @@ class CidadeDelete(GroupRequiredMixin, LoginRequiredMixin, SuccessMessageMixin, 
     template_name = 'cadastros/form-excluir.html'
     success_url = reverse_lazy('listar-cidades')
     group_required = ["Administrador"]
+    success_message = "Cidade excluída!"
 
     def get_queryset(self):
         return super().get_queryset().filter(user=self.request.user)

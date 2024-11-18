@@ -26,5 +26,19 @@
     </div>
 </div>
 
+{% endblock %}
+
+{% block scripts %}
+
+<script src="{% static 'js/jquert.mask.min.js' %}"> </script>
+
+<script> 
+    $(document).ready(function(){
+        $("#id_nascimento").mask('000.000.000-00')
+        $("input[name*=telefone], input[name*+celular]").masl
+    });
+
+
+</script>
 
 {% endblock %}
