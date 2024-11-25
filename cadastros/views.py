@@ -12,6 +12,9 @@ from cadastros.models import Cidade, Pessoa, Prefeitura, Produto, OrdemDeCompra,
 
 from django.contrib.messages.views import SuccessMessageMixin
 
+# importações filtro de pesquisa
+from django_filters.views import FilterView
+from .filters import CidadeFilter
 
 
 
@@ -49,13 +52,17 @@ class CidadeDelete(GroupRequiredMixin, LoginRequiredMixin, SuccessMessageMixin, 
     def get_queryset(self):
         return super().get_queryset().filter(user=self.request.user)
 
-class CidadeList(GroupRequiredMixin, LoginRequiredMixin, SuccessMessageMixin, ListView):
+class CidadeList(GroupRequiredMixin, LoginRequiredMixin, SuccessMessageMixin, FilterView):
     model = Cidade
     template_name = 'cadastros/list/cidade.html'
     group_required = ["Administrador", "Editor"]
+    paginate_by = 50
+    filterset_class = CidadeFilter 
 
     def get_queryset(self):
         return super().get_queryset().filter(user=self.request.user)
+        
+    
 
 
 # Pessoa
@@ -93,6 +100,7 @@ class PessoaList(GroupRequiredMixin, LoginRequiredMixin, ListView):
     model = Pessoa
     template_name = 'cadastros/list/pessoa.html'
     group_required = ["Administrador", "Editor"]
+    paginate_by = 50
 
     def get_queryset(self):
         return super().get_queryset().filter(user=self.request.user)
@@ -133,6 +141,7 @@ class PrefeituraList(GroupRequiredMixin, LoginRequiredMixin, ListView):
     model = Prefeitura
     template_name = 'cadastros/list/prefeitura.html'
     group_required = ["Administrador", "Editor"]
+    paginate_by = 50
 
     def get_queryset(self):
         return super().get_queryset().filter(user=self.request.user)
@@ -173,6 +182,7 @@ class ProdutoList(GroupRequiredMixin, LoginRequiredMixin, ListView):
     model = Produto
     template_name = 'cadastros/list/produto.html'
     group_required = ["Administrador", "Editor"]
+    paginate_by = 50
 
     def get_queryset(self):
         return super().get_queryset().filter(user=self.request.user)
@@ -213,6 +223,7 @@ class OrdemDeCompraList(GroupRequiredMixin, LoginRequiredMixin, ListView):
     model = OrdemDeCompra
     template_name = 'cadastros/list/ordem_de_compra.html'
     group_required = ["Administrador", "Editor"]
+    paginate_by = 50
 
     def get_queryset(self):
         return super().get_queryset().filter(user=self.request.user)

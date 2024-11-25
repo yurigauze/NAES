@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "cadastros.apps.CadastrosConfig",  # Ativar app
     "usuarios.apps.UsuariosConfig",
     "debug_toolbar",
+    'django_filters',
 
     
     
