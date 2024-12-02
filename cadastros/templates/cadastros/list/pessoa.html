@@ -1,11 +1,16 @@
 {% extends "paginas/modelo.html" %}
 
 {% block conteudo %}
+
 <h3>
     Lista de <b>Pessoas</b>
 </h3>
 
 <hr>
+
+    {% load crispy_forms_tags %}
+
+    {% include 'cadastros/list/filters_form.html' %}
 
 <table class="table table-striped">
     <thead>
@@ -53,6 +58,7 @@
 {% endblock %}
 
 {% block scripts %}
+
 <link href="https://cdn.datatables.net/v/bs5/dt-2.1.8/datatables.min.css" rel="stylesheet">
 <script src="https://cdn.datatables.net/v/bs5/dt-2.1.8/datatables.min.js"></script>
 <script>
@@ -61,3 +67,5 @@
             
     })
 </script>
+
+{% endblock %}

@@ -12,14 +12,13 @@ from cadastros.models import Cidade, Pessoa, Prefeitura, Produto, OrdemDeCompra,
 
 from django.contrib.messages.views import SuccessMessageMixin
 
-# importações filtro de pesquisa
 from django_filters.views import FilterView
-from .filters import CidadeFilter
+from .filters import CidadeFilter, PessoaFilter, PrefeituraFilter
 
 
 
 # Cidade
-class CidadeCreate(GroupRequiredMixin, LoginRequiredMixin, SuccessMessageMixin,CreateView):
+class CidadeCreate(GroupRequiredMixin, LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Cidade
     fields = ['name', 'estado']
     template_name = 'cadastros/form.html'
@@ -28,8 +27,14 @@ class CidadeCreate(GroupRequiredMixin, LoginRequiredMixin, SuccessMessageMixin,C
     success_message = "Cidade %(name)s Adicionada com sucesso!"
 
     def form_valid(self, form):
-        form.instance.user = self.request.user  # Define o usuário atual como o proprietário
+        form.instance.user = self.request.user
+
+        if Cidade.objects.filter(name=form.instance.name, estado=form.instance.estado, user=self.request.user).exists():
+            form.add_error('name', 'Você já cadastrou essa cidade.')
+            return self.form_invalid(form)
+
         return super().form_valid(form)
+
 
 class CidadeUpdate(GroupRequiredMixin, LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Cidade
@@ -40,7 +45,15 @@ class CidadeUpdate(GroupRequiredMixin, LoginRequiredMixin, SuccessMessageMixin, 
     success_message = "Cidade %(name)s atualizada!"
 
     def get_queryset(self):
+        if self.request.user.groups.filter(name="Administrador").exists():
+            return super().get_queryset()
         return super().get_queryset().filter(user=self.request.user)
+
+    def form_valid(self, form):
+        if form.instance.user != self.request.user and not self.request.user.groups.filter(name="Administrador").exists():
+            return redirect('listar-cidades')
+        return super().form_valid(form)
+
 
 class CidadeDelete(GroupRequiredMixin, LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     model = Cidade
@@ -50,19 +63,27 @@ class CidadeDelete(GroupRequiredMixin, LoginRequiredMixin, SuccessMessageMixin, 
     success_message = "Cidade excluída!"
 
     def get_queryset(self):
+        if self.request.user.groups.filter(name="Administrador").exists():
+            return super().get_queryset()
         return super().get_queryset().filter(user=self.request.user)
+
+    def form_valid(self, form):
+        if form.instance.user != self.request.user and not self.request.user.groups.filter(name="Administrador").exists():
+            return redirect('listar-cidades')
+        return super().form_valid(form)
+
 
 class CidadeList(GroupRequiredMixin, LoginRequiredMixin, SuccessMessageMixin, FilterView):
     model = Cidade
     template_name = 'cadastros/list/cidade.html'
     group_required = ["Administrador", "Editor"]
     paginate_by = 50
-    filterset_class = CidadeFilter 
+    filterset_class = CidadeFilter
 
     def get_queryset(self):
-        return super().get_queryset().filter(user=self.request.user)
-        
-    
+        if self.request.user.groups.filter(name="Administrador").exists():
+            return super().get_queryset()
+        return super().get_queryset().filter(user=self.request.user) 
 
 
 # Pessoa
@@ -72,10 +93,17 @@ class PessoaCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
     template_name = 'cadastros/form.html'
     success_url = reverse_lazy('listar-pessoas')
     group_required = ["Administrador", "Editor"]
+    success_message = "Pessoa %(nome_completo)s cadastrada com sucesso!"
 
     def form_valid(self, form):
         form.instance.user = self.request.user
+        
+        if Pessoa.objects.filter(email=form.instance.email, user=self.request.user).exists():
+            form.add_error('email', 'Já existe uma pessoa cadastrada com esse email.')
+            return self.form_invalid(form)
+        
         return super().form_valid(form)
+
 
 class PessoaUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
     model = Pessoa
@@ -85,7 +113,15 @@ class PessoaUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
     group_required = ["Administrador", "Editor"]
 
     def get_queryset(self):
+        if self.request.user.groups.filter(name="Administrador").exists():
+            return super().get_queryset()
         return super().get_queryset().filter(user=self.request.user)
+
+    def form_valid(self, form):
+        if form.instance.user != self.request.user and not self.request.user.groups.filter(name="Administrador").exists():
+            return redirect('listar-pessoas')
+        return super().form_valid(form)
+
 
 class PessoaDelete(GroupRequiredMixin, LoginRequiredMixin, DeleteView):
     model = Pessoa
@@ -94,15 +130,26 @@ class PessoaDelete(GroupRequiredMixin, LoginRequiredMixin, DeleteView):
     group_required = ["Administrador"]
 
     def get_queryset(self):
+        if self.request.user.groups.filter(name="Administrador").exists():
+            return super().get_queryset()
         return super().get_queryset().filter(user=self.request.user)
 
-class PessoaList(GroupRequiredMixin, LoginRequiredMixin, ListView):
+    def form_valid(self, form):
+        if form.instance.user != self.request.user and not self.request.user.groups.filter(name="Administrador").exists():
+            return redirect('listar-pessoas')
+        return super().form_valid(form)
+
+
+class PessoaList(GroupRequiredMixin, LoginRequiredMixin, ListView, FilterView):
     model = Pessoa
     template_name = 'cadastros/list/pessoa.html'
     group_required = ["Administrador", "Editor"]
     paginate_by = 50
+    filterset_class = PessoaFilter
 
     def get_queryset(self):
+        if self.request.user.groups.filter(name="Administrador").exists():
+            return super().get_queryset()
         return super().get_queryset().filter(user=self.request.user)
 
 
@@ -113,10 +160,18 @@ class PrefeituraCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
     template_name = 'cadastros/form.html'
     success_url = reverse_lazy('listar-prefeituras')
     group_required = ["Administrador", "Editor"]
+    success_message = "Prefeitura %(nome)s cadastrada com sucesso!"
 
     def form_valid(self, form):
         form.instance.user = self.request.user
+
+        if Prefeitura.objects.filter(nome=form.instance.nome, cidade=form.instance.cidade, user=self.request.user).exists():
+            form.add_error(
+                'nome', 'Já existe uma prefeitura cadastrada nessa cidade.')
+            return self.form_invalid(form)
+
         return super().form_valid(form)
+
 
 class PrefeituraUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
     model = Prefeitura
@@ -126,7 +181,15 @@ class PrefeituraUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
     group_required = ["Administrador", "Editor"]
 
     def get_queryset(self):
+        if self.request.user.groups.filter(name="Administrador").exists():
+            return super().get_queryset()
         return super().get_queryset().filter(user=self.request.user)
+
+    def form_valid(self, form):
+        if form.instance.user != self.request.user and not self.request.user.groups.filter(name="Administrador").exists():
+            return redirect('listar-prefeituras')
+        return super().form_valid(form)
+
 
 class PrefeituraDelete(GroupRequiredMixin, LoginRequiredMixin, DeleteView):
     model = Prefeitura
@@ -135,15 +198,27 @@ class PrefeituraDelete(GroupRequiredMixin, LoginRequiredMixin, DeleteView):
     group_required = ["Administrador"]
 
     def get_queryset(self):
+        if self.request.user.groups.filter(name="Administrador").exists():
+            return super().get_queryset()
         return super().get_queryset().filter(user=self.request.user)
 
-class PrefeituraList(GroupRequiredMixin, LoginRequiredMixin, ListView):
+    def form_valid(self, form):
+        if form.instance.user != self.request.user and not self.request.user.groups.filter(name="Administrador").exists():
+            return redirect('listar-prefeituras')
+        return super().form_valid(form)
+    
+
+class PrefeituraList(GroupRequiredMixin, LoginRequiredMixin, ListView, FilterView):
     model = Prefeitura
     template_name = 'cadastros/list/prefeitura.html'
     group_required = ["Administrador", "Editor"]
     paginate_by = 50
+    filterset_class = PrefeituraFilter
+    
 
     def get_queryset(self):
+        if self.request.user.groups.filter(name="Administrador").exists():
+            return super().get_queryset()
         return super().get_queryset().filter(user=self.request.user)
 
 
@@ -154,10 +229,18 @@ class ProdutoCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
     template_name = 'cadastros/form.html'
     success_url = reverse_lazy('listar-produtos')
     group_required = ["Administrador", "Editor"]
+    success_message = "Produto %(nome)s cadastrado com sucesso!"
 
     def form_valid(self, form):
         form.instance.user = self.request.user
+
+        if Produto.objects.filter(nome=form.instance.nome, user=self.request.user).exists():
+            form.add_error(
+                'nome', 'Já existe um produto cadastrado com esse nome.')
+            return self.form_invalid(form)
+
         return super().form_valid(form)
+
 
 class ProdutoUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
     model = Produto
@@ -167,7 +250,15 @@ class ProdutoUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
     group_required = ["Administrador", "Editor"]
 
     def get_queryset(self):
+        if self.request.user.groups.filter(name="Administrador").exists():
+            return super().get_queryset()
         return super().get_queryset().filter(user=self.request.user)
+
+    def form_valid(self, form):
+        if form.instance.user != self.request.user and not self.request.user.groups.filter(name="Administrador").exists():
+            return redirect('listar-produtos')
+        return super().form_valid(form)
+
 
 class ProdutoDelete(GroupRequiredMixin, LoginRequiredMixin, DeleteView):
     model = Produto
@@ -176,15 +267,26 @@ class ProdutoDelete(GroupRequiredMixin, LoginRequiredMixin, DeleteView):
     group_required = ["Administrador"]
 
     def get_queryset(self):
+        if self.request.user.groups.filter(name="Administrador").exists():
+            return super().get_queryset()
         return super().get_queryset().filter(user=self.request.user)
+
+    def form_valid(self, form):
+        if form.instance.user != self.request.user and not self.request.user.groups.filter(name="Administrador").exists():
+            return redirect('listar-produtos')
+        return super().form_valid(form)
+
 
 class ProdutoList(GroupRequiredMixin, LoginRequiredMixin, ListView):
     model = Produto
     template_name = 'cadastros/list/produto.html'
     group_required = ["Administrador", "Editor"]
     paginate_by = 50
+    
 
     def get_queryset(self):
+        if self.request.user.groups.filter(name="Administrador").exists():
+            return super().get_queryset()
         return super().get_queryset().filter(user=self.request.user)
 
 
