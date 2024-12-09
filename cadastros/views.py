@@ -67,11 +67,6 @@ class CidadeDelete(GroupRequiredMixin, LoginRequiredMixin, SuccessMessageMixin, 
             return super().get_queryset()
         return super().get_queryset().filter(user=self.request.user)
 
-    def form_valid(self, form):
-        if form.instance.user != self.request.user and not self.request.user.groups.filter(name="Administrador").exists():
-            return redirect('listar-cidades')
-        return super().form_valid(form)
-
 
 class CidadeList(GroupRequiredMixin, LoginRequiredMixin, SuccessMessageMixin, FilterView):
     model = Cidade
@@ -87,7 +82,7 @@ class CidadeList(GroupRequiredMixin, LoginRequiredMixin, SuccessMessageMixin, Fi
 
 
 # Pessoa
-class PessoaCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
+class PessoaCreate(GroupRequiredMixin, LoginRequiredMixin,SuccessMessageMixin, CreateView):
     model = Pessoa
     fields = ['nome_completo', 'nascimento', 'email', 'cargo', 'cidade']
     template_name = 'cadastros/form.html'
@@ -105,12 +100,14 @@ class PessoaCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class PessoaUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
+class PessoaUpdate(GroupRequiredMixin, LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Pessoa
     fields = ['nome_completo', 'nascimento', 'email', 'cargo', 'cidade']
     template_name = 'cadastros/form.html'
     success_url = reverse_lazy('listar-pessoas')
     group_required = ["Administrador", "Editor"]
+    success_message = "Pessoa %(nome_completo)s atualizada!"
+
 
     def get_queryset(self):
         if self.request.user.groups.filter(name="Administrador").exists():
@@ -123,24 +120,21 @@ class PessoaUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-class PessoaDelete(GroupRequiredMixin, LoginRequiredMixin, DeleteView):
+class PessoaDelete(GroupRequiredMixin, LoginRequiredMixin,SuccessMessageMixin, DeleteView):
     model = Pessoa
     template_name = 'cadastros/form-excluir.html'
     success_url = reverse_lazy('listar-pessoas')
     group_required = ["Administrador"]
+    success_message = "Pessoa excluída!"
+
 
     def get_queryset(self):
         if self.request.user.groups.filter(name="Administrador").exists():
             return super().get_queryset()
         return super().get_queryset().filter(user=self.request.user)
 
-    def form_valid(self, form):
-        if form.instance.user != self.request.user and not self.request.user.groups.filter(name="Administrador").exists():
-            return redirect('listar-pessoas')
-        return super().form_valid(form)
 
-
-class PessoaList(GroupRequiredMixin, LoginRequiredMixin, ListView, FilterView):
+class PessoaList(GroupRequiredMixin, LoginRequiredMixin, ListView,SuccessMessageMixin, FilterView):
     model = Pessoa
     template_name = 'cadastros/list/pessoa.html'
     group_required = ["Administrador", "Editor"]
@@ -154,9 +148,9 @@ class PessoaList(GroupRequiredMixin, LoginRequiredMixin, ListView, FilterView):
 
 
 # Prefeitura
-class PrefeituraCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
+class PrefeituraCreate(GroupRequiredMixin, LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Prefeitura
-    fields = ['nome', 'cidade']
+    fields = ['nome', 'cnpj', 'cidade']
     template_name = 'cadastros/form.html'
     success_url = reverse_lazy('listar-prefeituras')
     group_required = ["Administrador", "Editor"]
@@ -173,12 +167,14 @@ class PrefeituraCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class PrefeituraUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
+class PrefeituraUpdate(GroupRequiredMixin, LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Prefeitura
-    fields = ['nome', 'cidade']
+    fields = ['nome', 'cnpj', 'cidade']
     template_name = 'cadastros/form.html'
     success_url = reverse_lazy('listar-prefeituras')
     group_required = ["Administrador", "Editor"]
+    success_message = "Prefeitura %(nome)s atualizada!"
+
 
     def get_queryset(self):
         if self.request.user.groups.filter(name="Administrador").exists():
@@ -191,24 +187,23 @@ class PrefeituraUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-class PrefeituraDelete(GroupRequiredMixin, LoginRequiredMixin, DeleteView):
+class PrefeituraDelete(GroupRequiredMixin, LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     model = Prefeitura
     template_name = 'cadastros/form-excluir.html'
+    context_object_name = 'object'
     success_url = reverse_lazy('listar-prefeituras')
     group_required = ["Administrador"]
+    success_message = "Prefeitura excluída!"
+
 
     def get_queryset(self):
         if self.request.user.groups.filter(name="Administrador").exists():
             return super().get_queryset()
         return super().get_queryset().filter(user=self.request.user)
 
-    def form_valid(self, form):
-        if form.instance.user != self.request.user and not self.request.user.groups.filter(name="Administrador").exists():
-            return redirect('listar-prefeituras')
-        return super().form_valid(form)
     
 
-class PrefeituraList(GroupRequiredMixin, LoginRequiredMixin, ListView, FilterView):
+class PrefeituraList(GroupRequiredMixin, LoginRequiredMixin, ListView, SuccessMessageMixin, FilterView):
     model = Prefeitura
     template_name = 'cadastros/list/prefeitura.html'
     group_required = ["Administrador", "Editor"]
@@ -223,7 +218,7 @@ class PrefeituraList(GroupRequiredMixin, LoginRequiredMixin, ListView, FilterVie
 
 
 # Produto
-class ProdutoCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
+class ProdutoCreate(GroupRequiredMixin, LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Produto
     fields = ['nome', 'undMedida']
     template_name = 'cadastros/form.html'
@@ -242,12 +237,14 @@ class ProdutoCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class ProdutoUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
+class ProdutoUpdate(GroupRequiredMixin, LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Produto
     fields = ['nome', 'undMedida']
     template_name = 'cadastros/form.html'
     success_url = reverse_lazy('listar-produtos')
     group_required = ["Administrador", "Editor"]
+    success_message = "Produto %(nome)s atualizada!"
+
 
     def get_queryset(self):
         if self.request.user.groups.filter(name="Administrador").exists():
@@ -260,24 +257,22 @@ class ProdutoUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-class ProdutoDelete(GroupRequiredMixin, LoginRequiredMixin, DeleteView):
+class ProdutoDelete(GroupRequiredMixin, LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     model = Produto
     template_name = 'cadastros/form-excluir.html'
     success_url = reverse_lazy('listar-produtos')
     group_required = ["Administrador"]
+    success_message = "Produto excluída!"
+
 
     def get_queryset(self):
         if self.request.user.groups.filter(name="Administrador").exists():
             return super().get_queryset()
         return super().get_queryset().filter(user=self.request.user)
 
-    def form_valid(self, form):
-        if form.instance.user != self.request.user and not self.request.user.groups.filter(name="Administrador").exists():
-            return redirect('listar-produtos')
-        return super().form_valid(form)
 
 
-class ProdutoList(GroupRequiredMixin, LoginRequiredMixin, ListView):
+class ProdutoList(GroupRequiredMixin, LoginRequiredMixin, SuccessMessageMixin, ListView):
     model = Produto
     template_name = 'cadastros/list/produto.html'
     group_required = ["Administrador", "Editor"]

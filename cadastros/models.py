@@ -37,6 +37,7 @@ class Pessoa(models.Model):
 class Prefeitura(models.Model):
     nome = models.CharField(max_length=150)
     cidade = models.ForeignKey(Cidade, on_delete=models.PROTECT)
+    cnpj = models.CharField(max_length=15)
     cadastrado_em = models.DateTimeField(auto_now_add=True)
     atualizado_em = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)

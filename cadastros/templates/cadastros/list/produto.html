@@ -8,11 +8,12 @@
 
 <hr>
 
-    {% load crispy_forms_tags %}
+<a href="{% url 'cadastrar-produto' %}" class="btn btn-primary">
+    Cadastrar Produto
+</a>
 
-    {% include 'cadastros/list/filters_form.html' %}
 
-<table class="table table-striped">
+<table id="table-lista"  class="table table-striped">
     <thead>
         <th>Nome</th>
         <th>Und Medida</th>
@@ -26,13 +27,24 @@
         <td>{{object.nome}}</td>
         <td>{{object.undMedida}}</td>
         <td>
-        <a href="{% url 'editar-produto' object.pk %}" class="btn btn-sm btn-out">
-            Editar
-        </a>
-
-        <a href="{% url 'excluir-produto' object.pk %}" class="btn btn-sm btn-out">
-            Excluir
-        </a>
+            <div class="dropdown">
+                <button class="btn btn-light btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-gear"></i>
+                </button>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a class="dropdown-item link-primary" href="{% url 'editar-produto' object.pk  %}">
+                            <i class="bi bi-pencil-square"></i> Editar
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item link-danger" href="{% url 'excluir-produto' object.pk  %}">
+                            <i class="bi bi-trash"></i> Excluir
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </td>
     {% empty %}
         <tr>
             <td colspan="3">Nenhum registro encontrado.</td>
@@ -44,3 +56,26 @@
 </table>
 
 {% endblock %}
+
+{% block scripts %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<link href="https://cdn.datatables.net/v/bs5/dt-2.1.8/datatables.min.css" rel="stylesheet">
+<script src="https://cdn.datatables.net/v/bs5/dt-2.1.8/datatables.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#table-lista').DataTable({
+            paging: true,          // Ativar paginação
+            searching: true,       // Ativar barra de busca
+            ordering: true,        // Ativar ordenação
+            info: true,            // Mostrar informações ("Mostrando X de Y entradas")
+            language: {            // Configurar a linguagem para PT-BR
+                "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
+            }
+        });
+
+        // Alterar o input de data no filtro
+        $("input[name*=nascimento]").prop("type", "date");
+    });
+</script>
+{% endblock scripts %}
