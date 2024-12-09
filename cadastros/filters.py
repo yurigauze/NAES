@@ -1,4 +1,3 @@
-import django_filters
 from django_filters import FilterSet
 from .models import Cidade, Pessoa, Prefeitura
 
@@ -16,13 +15,7 @@ class PessoaFilter(FilterSet):
 
 
 
-class PrefeituraFilter(django_filters.FilterSet):
-    nome = django_filters.CharFilter(lookup_expr='icontains')
-    cidade = django_filters.CharFilter(
-        field_name='cidade__nome', lookup_expr='icontains')  
-    user = django_filters.CharFilter(
-        field_name='user__username', lookup_expr='icontains')
-
+class PrefeituraFilter(FilterSet):
     class Meta:
         model = Prefeitura
-        fields = {'nome', 'cidade', 'user'}
+        fields = {'nome' : ['icontains'], 'cnpj': ['icontains']}

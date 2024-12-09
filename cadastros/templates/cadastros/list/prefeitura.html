@@ -11,6 +11,8 @@
     Cadastrar Prefeitura
 </a>
 
+    {% load crispy_forms_tags %}
+    {% include 'cadastros/list/filters_form.html' %}
 
 <table id="table-lista" class="table table-striped">
     <thead>
@@ -71,7 +73,7 @@
             ordering: true,        // Ativar ordenação
             info: true,            // Mostrar informações ("Mostrando X de Y entradas")
             language: {            // Configurar a linguagem para PT-BR
-                "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
+                "url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/pt-BR.json"
             }
         });
 

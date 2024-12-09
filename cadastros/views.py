@@ -68,7 +68,7 @@ class CidadeDelete(GroupRequiredMixin, LoginRequiredMixin, SuccessMessageMixin, 
         return super().get_queryset().filter(user=self.request.user)
 
 
-class CidadeList(GroupRequiredMixin, LoginRequiredMixin, SuccessMessageMixin, FilterView):
+class CidadeList(GroupRequiredMixin, LoginRequiredMixin, FilterView):
     model = Cidade
     template_name = 'cadastros/list/cidade.html'
     group_required = ["Administrador", "Editor"]
@@ -134,7 +134,7 @@ class PessoaDelete(GroupRequiredMixin, LoginRequiredMixin,SuccessMessageMixin, D
         return super().get_queryset().filter(user=self.request.user)
 
 
-class PessoaList(GroupRequiredMixin, LoginRequiredMixin, ListView,SuccessMessageMixin, FilterView):
+class PessoaList(GroupRequiredMixin, LoginRequiredMixin, FilterView):
     model = Pessoa
     template_name = 'cadastros/list/pessoa.html'
     group_required = ["Administrador", "Editor"]
@@ -203,7 +203,7 @@ class PrefeituraDelete(GroupRequiredMixin, LoginRequiredMixin, SuccessMessageMix
 
     
 
-class PrefeituraList(GroupRequiredMixin, LoginRequiredMixin, ListView, SuccessMessageMixin, FilterView):
+class PrefeituraList(GroupRequiredMixin, LoginRequiredMixin, FilterView):
     model = Prefeitura
     template_name = 'cadastros/list/prefeitura.html'
     group_required = ["Administrador", "Editor"]
@@ -213,8 +213,8 @@ class PrefeituraList(GroupRequiredMixin, LoginRequiredMixin, ListView, SuccessMe
 
     def get_queryset(self):
         if self.request.user.groups.filter(name="Administrador").exists():
-            return super().get_queryset()
-        return super().get_queryset().filter(user=self.request.user)
+            return super().get_queryset().select_related("cidade")
+        return super().get_queryset().filter(user=self.request.user).select_related("cidade")
 
 
 # Produto
